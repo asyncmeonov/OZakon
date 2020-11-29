@@ -11,12 +11,12 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import java.net.URL
 
-
 class ConstitutionExtractor(override val source: URL) : Extractor {
 
     private val options: ChromeOptions = ChromeOptions().addArguments("--headless")
 
     override fun read(): List<String> {
+        logger.info("Reading Constitution from ${source.toExternalForm()}")
         val driver = ChromeDriver(options)
         try {
             driver.get(source.toExternalForm())
@@ -30,26 +30,31 @@ class ConstitutionExtractor(override val source: URL) : Extractor {
     }
 
     override fun parse(raw: List<String>): LegalDocument {
+        logger.info("Start parsing Constitution to LegalDocument object...")
         val flat = raw.joinToString(separator = "\n")
         val chapters = flat.findAllChapters()
             .map { chapter ->
                 Chapter(
-                    chapter.findChapterId(),
-                    chapter.findChapterName(),
-                    chapter.findAllArticles()
+                    id = chapter.findChapterId(),
+                    name = chapter.findChapterName(),
+                    articles = chapter.findAllArticles()
                         .map { article ->
                             Article(
-                                article.findArticleId(),
-                                article.findAllSections()
-                                    .map { section -> Section(section.findSectionId(), section.findSectionText()) }
+                                id = article.findArticleId(),
+                                sections = article.findAllSections()
+                                    .map { section ->
+                                        Section(
+                                            id = section.findSectionId(),
+                                            raw = section.findSectionText()
+                                        )
+                                    }
                                     .toSet()
                             )
                         }.toSet()
                 )
             }.toSet()
-
-        println(chapters)
-        return LegalDocument("Конституция", chapters)
+        logger.info("Finished parsing ${chapters.size} chapters")
+        return LegalDocument(name = "Конституция", chapters = chapters)
     }
 
     private fun String.findAllChapters(): Set<String> {

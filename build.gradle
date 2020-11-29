@@ -11,8 +11,11 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.21'
-    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+    compile 'org.slf4j:slf4j-api:1.7.30'
+    compile 'org.apache.pdfbox:pdfbox:2.0.21'
+    compile 'org.seleniumhq.selenium:selenium-java:3.141.59'
+    compile 'org.mongodb:mongodb-driver-sync:4.1.1'
+    compile 'com.google.code.gson:gson:2.8.6'
 
 }
 

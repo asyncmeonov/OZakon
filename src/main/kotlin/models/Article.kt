@@ -5,4 +5,4 @@ package models
  *
  * Член, съдържащ алинеи
  */
-data class Article(val id: Int, val sections: Set<Section>)
+data class Article(val header: VersionHeader = VersionHeader(), val id: Int, val sections: Set<Section>)
